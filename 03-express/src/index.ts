@@ -87,7 +87,7 @@ app.put("/paises/:id", (req, res) => {
                 }
             })
             if (!nome || !capital) {
-                res.status(400).send("Envie os parâmetros a serem modificados")
+                res.status(422).send("Envie os parâmetros a serem modificados")
             } else {
                 res.send("país modificado")
             }

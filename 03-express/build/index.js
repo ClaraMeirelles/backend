@@ -68,30 +68,95 @@ app.get('/paises/:id', (req, res) => {
 });
 app.put("/paises/:id", (req, res) => {
     const id = Number(req.params.id);
-    const nome = String(req.body.nome);
-    const capital = String(req.body.capital);
-    console.log(nome);
-    console.log(capital);
-    let paisModificado;
+    const nome = req.body.nome;
+    const capital = req.body.capital;
+    const auth = req.headers.authorization;
     try {
-        data_1.countries.map((pais) => {
-            if (pais.id === id) {
-                if (nome) {
-                    pais.name = nome;
+        if (auth && auth.length >= 10) {
+            data_1.countries.forEach((pais) => {
+                if (pais.id === id) {
+                    if (nome) {
+                        pais.name = nome;
+                    }
+                    if (capital) {
+                        pais.capital = capital;
+                    }
                 }
-                if (capital) {
-                    pais.capital = capital;
-                }
+            });
+            if (!nome || !capital) {
+                res.status(400).send("Envie os parâmetros a serem modificados");
             }
-            paisModificado = pais;
-            res.send(paisModificado);
-        });
-        if (!nome || !capital) {
-            res.status(400).send("Envie os parâmetros a serem modificados");
+            else {
+                res.send("país modificado");
+            }
+        }
+        else {
+            res.statusCode = 401;
+            throw new Error("Autorização necessária!");
         }
     }
     catch (err) {
         res.send(err);
+    }
+});
+app.delete("/paises/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const auth = req.headers.authorization;
+    let deletar = false;
+    try {
+        if (auth.length >= 10) {
+            data_1.countries.map((pais) => {
+                if (pais.id === id) {
+                    deletar = data_1.countries.indexOf(pais);
+                    data_1.countries.splice(deletar, 1);
+                }
+            });
+            if (!deletar) {
+                throw new Error("País não encontrado");
+            }
+            const paisRemovido = data_1.countries[id].name;
+            res.send(`${paisRemovido} foi removido`);
+        }
+    }
+    catch (err) {
+        res.send(err);
+    }
+});
+app.post("/paises/", (req, res) => {
+    const nome = req.body.name;
+    const capital = req.body.capital;
+    const continente = req.body.continent;
+    const auth = req.headers.authorization;
+    try {
+        if (auth && auth.length >= 10) {
+            data_1.countries.map((pais) => {
+                if (pais.name === nome) {
+                    res.statusCode = 400;
+                    throw new Error(`Já existe um país na lista com este nome! ID: ${pais.id}, ${pais.name}`);
+                }
+            });
+            if (nome && capital && continente) {
+                let novoPais = {
+                    id: Date.now(),
+                    name: nome,
+                    capital: capital,
+                    continent: continente
+                };
+                data_1.countries.push(novoPais);
+            }
+            else {
+                res.statusCode = 400;
+                throw new Error("Parâmetros incompletos!");
+            }
+            res.send(`Pais adicionado!`);
+        }
+        else {
+            res.statusCode = 401;
+            throw new Error("Autorização necessária");
+        }
+    }
+    catch (err) {
+        res.send(err.message);
     }
 });
 //# sourceMappingURL=index.js.map

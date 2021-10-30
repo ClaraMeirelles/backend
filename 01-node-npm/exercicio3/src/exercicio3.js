@@ -4,7 +4,13 @@ const fs = require("fs")
 
 const tarefa = process.argv[2]
 const listaTarefasDoc = fs.readFileSync("lista-de-tarefas.txt")
-const listaTarefas = JSON.parse(listaTarefasDoc)
+console.log(listaTarefasDoc)
+let listaTarefas
+try{
+    listaTarefas = JSON.parse(listaTarefasDoc) 
+} catch {
+    listaTarefas = []
+}
 
 listaTarefas.push(tarefa)
 const listaString = JSON.stringify(listaTarefas)

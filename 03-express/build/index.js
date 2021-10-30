@@ -20,42 +20,28 @@ app.get('/paises', (req, res) => {
         res.status(400).send("Ocorreu um erro");
     }
 });
-app.get('/paises/busca/', (req, res) => {
-    const nome = String(req.query.pais);
-    const capital = String(req.query.capital);
-    const continente = String(req.query.continente);
-    const filtroPaises = [];
+app.get('/paises/busca', (req, res) => {
+    const nome = req.query.nome;
+    const capital = req.query.capital;
+    const continente = req.query.continente;
+    console.log(nome);
+    console.log(capital);
+    console.log(continente);
+    let filtroPaises = data_1.countries;
     try {
         if (nome) {
-            const filtroPaises = data_1.countries.filter((pais) => pais.name.toLowerCase().includes(nome.toLowerCase()));
-            if (filtroPaises) {
-                res.status(200).send(filtroPaises);
-            }
-            else {
-                res.statusCode = 404;
-                throw new Error("País não encontrado");
-            }
+            console.log("entrou Nome");
+            filtroPaises = filtroPaises.filter((pais) => pais.name.toLowerCase().includes(String(nome).toLowerCase()));
         }
         if (capital) {
-            const filtroPaises = data_1.countries.filter((pais) => pais.capital.toLowerCase().includes(capital.toLowerCase()));
-            if (filtroPaises) {
-                res.status(200).send(filtroPaises);
-            }
-            else {
-                res.statusCode = 404;
-                throw new Error("País não encontrado");
-            }
+            console.log("entrou Capital");
+            filtroPaises = filtroPaises.filter((pais) => pais.capital.toLowerCase().includes(String(capital).toLowerCase()));
         }
         if (continente) {
-            const filtroPaises = data_1.countries.filter((pais) => pais.continent.toLowerCase().includes(continente.toLowerCase()));
-            if (filtroPaises) {
-                res.status(200).send(filtroPaises);
-            }
-            else {
-                res.statusCode = 404;
-                throw new Error("País não encontrado");
-            }
+            console.log("entrou continente");
+            filtroPaises = filtroPaises.filter((pais) => pais.continent.toLowerCase().includes(String(continente).toLowerCase()));
         }
+        res.status(200).send(filtroPaises);
     }
     catch (err) {
         res.send(err.message);
@@ -78,6 +64,34 @@ app.get('/paises/:id', (req, res) => {
     }
     catch (err) {
         res.send(err.message);
+    }
+});
+app.put("/paises/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const nome = String(req.body.nome);
+    const capital = String(req.body.capital);
+    console.log(nome);
+    console.log(capital);
+    let paisModificado;
+    try {
+        data_1.countries.map((pais) => {
+            if (pais.id === id) {
+                if (nome) {
+                    pais.name = nome;
+                }
+                if (capital) {
+                    pais.capital = capital;
+                }
+            }
+            paisModificado = pais;
+            res.send(paisModificado);
+        });
+        if (!nome || !capital) {
+            res.status(400).send("Envie os parâmetros a serem modificados");
+        }
+    }
+    catch (err) {
+        res.send(err);
     }
 });
 //# sourceMappingURL=index.js.map

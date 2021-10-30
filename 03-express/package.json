@@ -3,7 +3,8 @@
    "version": "1.0.0",
    "main": "index.js",
    "scripts": {
-      "start": "tsc && node build/index.js"
+      "start": "tsc && node build/index.js",
+      "dev-start": "tsnd ./src/index.ts"
    },
    "license": "ISC",
    "devDependencies": {
@@ -13,6 +14,7 @@
    },
    "dependencies": {
       "cors": "^2.8.5",
-      "express": "^4.17.1"
+      "express": "^4.17.1",
+      "ts-node-dev": "^1.1.8"
    }
 }

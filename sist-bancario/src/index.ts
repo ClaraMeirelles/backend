@@ -7,15 +7,6 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-// apagar======
-app.get("/usuario", (req, res) => {
-    res.send(users)
-})
-app.get("/conta", (req, res) => {
-    res.send(contas)
-})
-// =====apagar
-
 // verificar conta: saldo/extrato
 app.get("/conta/:cpf/:nome", (req: Request, res: Response) => {
     try {

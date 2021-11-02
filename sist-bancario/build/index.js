@@ -9,12 +9,6 @@ const data_1 = require("./data");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.get("/usuario", (req, res) => {
-    res.send(data_1.users);
-});
-app.get("/conta", (req, res) => {
-    res.send(data_1.contas);
-});
 app.get("/conta/:cpf/:nome", (req, res) => {
     try {
         const cpf = req.params.cpf;
